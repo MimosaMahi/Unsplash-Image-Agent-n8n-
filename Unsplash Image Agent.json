@@ -1,0 +1,143 @@
+{
+  "name": "Unsplash Image Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "unsplash-agent",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "0c18516b-a96c-4148-bd8f-e218299c900a",
+      "name": "Webhook",
+      "webhookId": "184aaebb-add5-4ef8-904b-e3ece8f0d063"
+    },
+    {
+      "parameters": {
+        "url": "https://api.unsplash.com/search/photos",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "={{ $json.query.q}}"
+            },
+            {
+              "name": "per_page",
+              "value": "3"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Client-ID V744IxDtPc4dVi8NJca0GlCZdgTdfvqh_VGJPdGVDwc"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        224,
+        0
+      ],
+      "id": "f37a2b33-58a7-4bfc-8b50-765a71eefd49",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        672,
+        0
+      ],
+      "id": "15d2948b-cc96-4fa5-856e-35e701a69348",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7e5aac14-3468-4a1e-b768-915eee05bdb8",
+              "name": "Images",
+              "value": "={{ $json.results.map(r => r.urls.full) }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        448,
+        0
+      ],
+      "id": "c0daabcc-4604-4836-8cd7-401f5fc4375c",
+      "name": "Edit Fields"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "7c78ad91-d9d8-44ec-875d-2f5a0fde2af0",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7f982f7f61a9281ecd597a3c51e6725a636390be0d9cc97dc08c37d48f1a7859"
+  },
+  "nodeGroups": [],
+  "id": "VSix6mydVISjzpKB",
+  "tags": []
+}
